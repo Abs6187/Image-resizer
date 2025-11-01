@@ -1,0 +1,42 @@
+{
+  "name": "professional-image-resizer",
+  "version": "2.0.0",
+  "description": "Professional Image Resizer - Advanced web-based image editing tool with resize, crop, filters, and format conversion",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -o",
+    "dev": "npx live-server --port=8080 --open=/",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "keywords": [
+    "image",
+    "resizer",
+    "image-editor",
+    "crop",
+    "filter",
+    "canvas",
+    "webp",
+    "png",
+    "jpeg",
+    "image-compression",
+    "client-side",
+    "no-upload"
+  ],
+  "author": "Abhay Gupta <https://github.com/Abs6187>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abs6187/Image-resizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Abs6187/Image-resizer/issues"
+  },
+  "homepage": "https://github.com/Abs6187/Image-resizer#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
