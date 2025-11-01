@@ -3,75 +3,354 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional Image Resizer - Resize, crop, filter, and convert images with advanced features">
   <link rel="stylesheet" href="index.css">
-  <title>Image Resizer</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+  <title>Professional Image Resizer - Advanced Image Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <grid-container>
-    <div id="title-div">
-      <h1>Image Resizer</h1>
-    </div>
-    <div id="background-image" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('background.jpg'); background-size: cover;">
-    </div>
+  <!-- Dark Mode Toggle -->
+  <div class="theme-toggle">
+    <button id="theme-toggle-btn" title="Toggle Dark/Light Mode">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
 
-    
-    
-    <div id="select-image-div">
-      <div id="drag-area">
-        <img  src="upload_icon.svg">
-        <p>Drag and drop image here</p>
-        <p>or</p>    
-        <button id="select-image">
-          <span id="btn-icon"> 
-            <i class="fa fa-upload"></i>
-          </span>
-          <input type="file" id="photo-file-input"> Browse from Computer
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1><i class="fas fa-image"></i> Professional Image Resizer</h1>
+      <p class="subtitle">Resize, crop, filter & convert images with advanced features</p>
+    </header>
+
+    <!-- Upload Section -->
+    <section id="upload-section" class="upload-section">
+      <div id="drag-area" class="drag-area">
+        <div class="upload-icon">
+          <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+        <h2>Drag & Drop Images Here</h2>
+        <p class="upload-text">or</p>
+        <label for="file-input" class="upload-btn">
+          <i class="fas fa-folder-open"></i> Browse Files
+        </label>
+        <input type="file" id="file-input" accept="image/*" multiple hidden>
+        <p class="file-info">Supports: JPG, PNG, WebP, GIF (Max 50MB per file)</p>
+      </div>
+    </section>
+
+    <!-- Editor Section -->
+    <section id="editor-section" class="editor-section" style="display: none;">
+
+      <!-- Image Display and Canvas -->
+      <div class="editor-main">
+        <div class="canvas-container">
+          <canvas id="main-canvas"></canvas>
+          <div id="crop-overlay" class="crop-overlay" style="display: none;">
+            <div class="crop-box">
+              <div class="crop-handle nw"></div>
+              <div class="crop-handle ne"></div>
+              <div class="crop-handle sw"></div>
+              <div class="crop-handle se"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Info -->
+        <div class="image-info">
+          <div class="info-item">
+            <i class="fas fa-file"></i>
+            <span id="file-name">No file selected</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-ruler-combined"></i>
+            <span id="dimensions">0 x 0 px</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-weight"></i>
+            <span id="file-size">0 KB</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-file-image"></i>
+            <span id="file-format">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Control Panel -->
+      <div class="control-panel">
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="resize"><i class="fas fa-expand-arrows-alt"></i> Resize</button>
+          <button class="tab-btn" data-tab="crop"><i class="fas fa-crop"></i> Crop</button>
+          <button class="tab-btn" data-tab="filters"><i class="fas fa-magic"></i> Filters</button>
+          <button class="tab-btn" data-tab="adjust"><i class="fas fa-sliders-h"></i> Adjust</button>
+          <button class="tab-btn" data-tab="transform"><i class="fas fa-sync-alt"></i> Transform</button>
+        </div>
+
+        <!-- Tab Content: Resize -->
+        <div id="resize-tab" class="tab-content active">
+          <h3>Resize Options</h3>
+
+          <!-- Preset Dimensions -->
+          <div class="control-group">
+            <label>Presets</label>
+            <div class="preset-buttons">
+              <button class="preset-btn" data-width="1920" data-height="1080">1080p</button>
+              <button class="preset-btn" data-width="3840" data-height="2160">4K</button>
+              <button class="preset-btn" data-width="1080" data-height="1080">Square</button>
+              <button class="preset-btn" data-width="1080" data-height="1350">Instagram</button>
+              <button class="preset-btn" data-width="1200" data-height="630">Facebook</button>
+              <button class="preset-btn" data-width="1024" data-height="512">Twitter</button>
+            </div>
+          </div>
+
+          <!-- Percentage Resize -->
+          <div class="control-group">
+            <label>
+              <i class="fas fa-percentage"></i> Resize by Percentage
+              <span id="percentage-value">100%</span>
+            </label>
+            <input type="range" id="percentage-slider" class="slider" min="1" max="200" value="100">
+          </div>
+
+          <!-- Custom Dimensions -->
+          <div class="control-group">
+            <label><i class="fas fa-ruler"></i> Custom Dimensions</label>
+            <div class="dimension-inputs">
+              <div class="input-wrapper">
+                <label for="width-input">Width</label>
+                <input type="number" id="width-input" placeholder="Width (px)" min="1">
+              </div>
+              <button id="aspect-ratio-lock" class="lock-btn" title="Lock aspect ratio">
+                <i class="fas fa-lock"></i>
+              </button>
+              <div class="input-wrapper">
+                <label for="height-input">Height</label>
+                <input type="number" id="height-input" placeholder="Height (px)" min="1">
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality Control -->
+          <div class="control-group">
+            <label>
+              <i class="fas fa-gem"></i> Quality
+              <span id="quality-value">90%</span>
+            </label>
+            <input type="range" id="quality-slider" class="slider" min="1" max="100" value="90">
+          </div>
+        </div>
+
+        <!-- Tab Content: Crop -->
+        <div id="crop-tab" class="tab-content">
+          <h3>Crop Image</h3>
+          <div class="control-group">
+            <button id="enable-crop-btn" class="action-btn">
+              <i class="fas fa-crop-alt"></i> Enable Crop Mode
+            </button>
+            <button id="apply-crop-btn" class="action-btn" style="display: none;">
+              <i class="fas fa-check"></i> Apply Crop
+            </button>
+            <button id="cancel-crop-btn" class="action-btn secondary" style="display: none;">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+          <div class="control-group">
+            <label>Aspect Ratio</label>
+            <select id="crop-ratio" class="select-input">
+              <option value="free">Free</option>
+              <option value="1:1">1:1 (Square)</option>
+              <option value="4:3">4:3</option>
+              <option value="16:9">16:9</option>
+              <option value="9:16">9:16 (Story)</option>
+              <option value="4:5">4:5 (Portrait)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tab Content: Filters -->
+        <div id="filters-tab" class="tab-content">
+          <h3>Image Filters</h3>
+          <div class="filter-buttons">
+            <button class="filter-btn" data-filter="none">
+              <div class="filter-preview">Original</div>
+            </button>
+            <button class="filter-btn" data-filter="grayscale">
+              <div class="filter-preview grayscale-preview">Grayscale</div>
+            </button>
+            <button class="filter-btn" data-filter="sepia">
+              <div class="filter-preview sepia-preview">Sepia</div>
+            </button>
+            <button class="filter-btn" data-filter="invert">
+              <div class="filter-preview invert-preview">Invert</div>
+            </button>
+            <button class="filter-btn" data-filter="vintage">
+              <div class="filter-preview vintage-preview">Vintage</div>
+            </button>
+            <button class="filter-btn" data-filter="cool">
+              <div class="filter-preview cool-preview">Cool</div>
+            </button>
+            <button class="filter-btn" data-filter="warm">
+              <div class="filter-preview warm-preview">Warm</div>
+            </button>
+            <button class="filter-btn" data-filter="vibrant">
+              <div class="filter-preview vibrant-preview">Vibrant</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab Content: Adjust -->
+        <div id="adjust-tab" class="tab-content">
+          <h3>Adjustments</h3>
+
+          <div class="control-group">
+            <label>
+              <i class="fas fa-sun"></i> Brightness
+              <span id="brightness-value">100%</span>
+            </label>
+            <input type="range" id="brightness-slider" class="slider" min="0" max="200" value="100">
+          </div>
+
+          <div class="control-group">
+            <label>
+              <i class="fas fa-adjust"></i> Contrast
+              <span id="contrast-value">100%</span>
+            </label>
+            <input type="range" id="contrast-slider" class="slider" min="0" max="200" value="100">
+          </div>
+
+          <div class="control-group">
+            <label>
+              <i class="fas fa-palette"></i> Saturation
+              <span id="saturation-value">100%</span>
+            </label>
+            <input type="range" id="saturation-slider" class="slider" min="0" max="200" value="100">
+          </div>
+
+          <div class="control-group">
+            <label>
+              <i class="fas fa-blur"></i> Blur
+              <span id="blur-value">0px</span>
+            </label>
+            <input type="range" id="blur-slider" class="slider" min="0" max="20" value="0">
+          </div>
+
+          <div class="control-group">
+            <label>
+              <i class="fas fa-tint"></i> Hue Rotate
+              <span id="hue-value">0°</span>
+            </label>
+            <input type="range" id="hue-slider" class="slider" min="0" max="360" value="0">
+          </div>
+
+          <button id="reset-adjustments-btn" class="action-btn secondary">
+            <i class="fas fa-undo"></i> Reset All
+          </button>
+        </div>
+
+        <!-- Tab Content: Transform -->
+        <div id="transform-tab" class="tab-content">
+          <h3>Transform</h3>
+
+          <div class="control-group">
+            <label><i class="fas fa-sync-alt"></i> Rotate</label>
+            <div class="transform-buttons">
+              <button id="rotate-left-btn" class="action-btn">
+                <i class="fas fa-undo"></i> 90° Left
+              </button>
+              <button id="rotate-right-btn" class="action-btn">
+                <i class="fas fa-redo"></i> 90° Right
+              </button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label><i class="fas fa-arrows-alt-h"></i> Flip</label>
+            <div class="transform-buttons">
+              <button id="flip-horizontal-btn" class="action-btn">
+                <i class="fas fa-arrows-alt-h"></i> Horizontal
+              </button>
+              <button id="flip-vertical-btn" class="action-btn">
+                <i class="fas fa-arrows-alt-v"></i> Vertical
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button id="reset-btn" class="action-btn secondary">
+            <i class="fas fa-undo-alt"></i> Reset All
+          </button>
+          <button id="download-btn" class="action-btn primary">
+            <i class="fas fa-download"></i> Download Image
+          </button>
+        </div>
+
+        <!-- Export Options -->
+        <div class="export-options">
+          <label for="export-format"><i class="fas fa-file-export"></i> Export Format</label>
+          <select id="export-format" class="select-input">
+            <option value="jpeg">JPEG</option>
+            <option value="png">PNG</option>
+            <option value="webp">WebP</option>
+          </select>
+        </div>
+
+        <!-- File Size Comparison -->
+        <div id="size-comparison" class="size-comparison">
+          <div class="comparison-item">
+            <span>Original:</span>
+            <strong id="original-size">0 KB</strong>
+          </div>
+          <div class="comparison-item">
+            <span>New:</span>
+            <strong id="new-size">0 KB</strong>
+          </div>
+          <div class="comparison-item">
+            <span>Saved:</span>
+            <strong id="saved-size" class="saved">0%</strong>
+          </div>
+        </div>
+
+        <!-- New Image Button -->
+        <button id="new-image-btn" class="action-btn secondary full-width">
+          <i class="fas fa-plus"></i> Upload New Image
         </button>
       </div>
-    </div>
+    </section>
 
-
-    <div id="image-div">
-      <div id="canvas-div">
-        <canvas id="resized-canvas"></canvas>
-      </div>
-      <div id="file-name"></div>
-    </div>
-
-    <div id="empty-div">
-      <button id="select-another-image">
-        <input type="file" id="photo-file-input" > Select Another Image? ↑
+    <!-- Batch Processing Section -->
+    <section id="batch-section" class="batch-section" style="display: none;">
+      <h2><i class="fas fa-layer-group"></i> Batch Processing</h2>
+      <div id="batch-images" class="batch-images"></div>
+      <button id="batch-download-btn" class="action-btn primary">
+        <i class="fas fa-download"></i> Download All as ZIP
       </button>
-     
-    </div>
+    </section>
 
-
-
-    <div id="sliders-div">
-      <input type="range" min="1" max="100" value="100" id="slider-size" class="slider">
-      <label id="slider-value-label"> 100% of original size</label>
-      <input type="range" min="1" max="10" value="8" id="slider-quality" class="slider">
-      <label id="slider-quality-label">Quality: 8</label>
-    </div>
-    
-    <div id="download-div">
-      <button id="download-button">
-        <span id="btn-icon"> 
-          <i class="fa fa-download"></i>
-        </span>
-        Download Image 
-      </button>
-    </div>
-
-    <footer id="footer">
-      <h3>Developed by <a href="https://github.com/Abs6187" target="_blank">Abhay Gupta</a></h3>
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Developed by <a href="https://github.com/Abs6187" target="_blank">Abhay Gupta</a></p>
+      <p class="shortcuts-hint">Press <kbd>Ctrl+D</kbd> to download • <kbd>Ctrl+Z</kbd> to reset</p>
     </footer>
-  </grid-container>
-<script src="index.js"></script>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+    <p>Processing image...</p>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="index.js"></script>
 </body>
 </html>
